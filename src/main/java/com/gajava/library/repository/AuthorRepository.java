@@ -1,6 +1,8 @@
 package com.gajava.library.repository;
 
 import com.gajava.library.model.Author;
+import org.springframework.stereotype.Repository;
 
-public interface AuthorRepository extends Repository<Author> {
+@Repository
+public interface AuthorRepository extends CommonRepository<Author> {
 }
