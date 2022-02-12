@@ -3,6 +3,7 @@ package com.gajava.library.controller;
 import com.gajava.library.converter.AuthorConverter;
 import com.gajava.library.dto.author.AuthorCreateDto;
 import com.gajava.library.dto.author.AuthorDto;
+import com.gajava.library.dto.request.Pagination;
 import com.gajava.library.model.Author;
 import com.gajava.library.service.AuthorService;
 import org.modelmapper.ModelMapper;
@@ -55,8 +56,8 @@ public class AuthorController {
     }
 
     @GetMapping(value = "/read-all")
-    public ResponseEntity<List<AuthorDto>> readAll(@RequestBody final PageRequest pageRequest) {
-        final List<Author> authors = authorService.readAll(pageRequest);
+    public ResponseEntity<List<AuthorDto>> readAll(@RequestBody final Pagination pagination) {
+        final List<Author> authors = authorService.readAll(PageRequest.of(pagination.getPage(), pagination.getSize()));
         final List<AuthorDto> authorDtoList = authors.stream().map(converter::convertEntityToAuthorDto).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(authorDtoList);
     }
