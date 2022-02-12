@@ -1,9 +1,6 @@
 package com.gajava.library.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,7 +8,8 @@ import java.util.Set;
 
 
 @NoArgsConstructor
-@SuperBuilder
+@AllArgsConstructor
+@Builder
 @Entity
 public class Book extends BaseEntity {
 

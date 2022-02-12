@@ -1,21 +1,16 @@
 package com.gajava.library.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import java.util.Set;
+import javax.persistence.Entity;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@SuperBuilder
+@Builder
+@Entity
 public class Author extends Person {
-
-    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
-    Set<Book> books;
-
 }
