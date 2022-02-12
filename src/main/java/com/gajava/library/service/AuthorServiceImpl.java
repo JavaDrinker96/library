@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthorServiceImpl extends AbstractService<Author, AuthorRepository> implements AuthorService {
 
-    public AuthorServiceImpl(final AuthorRepository repository, final Class<Author> entityClass) {
-        super(repository, entityClass);
+    public AuthorServiceImpl(final AuthorRepository repository) {
+        super(repository, Author.class);
     }
 
 }

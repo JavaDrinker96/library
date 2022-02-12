@@ -6,6 +6,7 @@ import com.gajava.library.exception.SaveEntityException;
 import com.gajava.library.exception.UpdateEntityException;
 import com.gajava.library.model.BaseEntity;
 import com.gajava.library.repository.CommonRepository;
+import lombok.SneakyThrows;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -22,12 +23,14 @@ public class AbstractService<E extends BaseEntity, R extends CommonRepository<E>
     }
 
     @Override
+    @SneakyThrows
     public E create(final E entity) {
         final Optional<E> optionalSavedEntity = Optional.of(repository.save(entity));
         return optionalSavedEntity.orElseThrow(() -> new SaveEntityException(entityClass.getTypeName()));
     }
 
     @Override
+    @SneakyThrows
     public E update(final E newEntity) {
         if (newEntity.getId() == null) {
             throw new NullIdException(entityClass.getTypeName());
@@ -39,6 +42,7 @@ public class AbstractService<E extends BaseEntity, R extends CommonRepository<E>
     }
 
     @Override
+    @SneakyThrows
     public E read(final Long id) {
         final Optional<E> optionalFoundEntity = repository.findById(id);
         return optionalFoundEntity.orElseThrow(() -> new NoEntityException());
@@ -50,10 +54,11 @@ public class AbstractService<E extends BaseEntity, R extends CommonRepository<E>
     }
 
     @Override
+    @SneakyThrows
     public List<E> readAll(final Pageable pageable) {
         final List<E> entityList = repository.findAll(pageable).getContent();
         if (entityList.isEmpty()) {
-            throw new NoEntityException(entityClass);
+            throw new NoEntityException(entityClass.getTypeName());
         }
         return entityList;
     }

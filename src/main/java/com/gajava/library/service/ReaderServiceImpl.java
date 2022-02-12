@@ -10,6 +10,7 @@ import com.gajava.library.model.RentalRecord;
 import com.gajava.library.repository.BookRepository;
 import com.gajava.library.repository.ReaderRepository;
 import com.gajava.library.repository.RentalRecordRepository;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,14 +27,17 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
     final BookRepository bookRepository;
     final RentalRecordRepository rentalRecordRepository;
 
-    public ReaderServiceImpl(final ReaderRepository repository, final BookRepository bookRepository, final RentalRecordRepository rentalRecordRepository, final Class<Reader> entityClass) {
-        super(repository, entityClass);
+    public ReaderServiceImpl(final ReaderRepository repository,
+                             final BookRepository bookRepository,
+                             final RentalRecordRepository rentalRecordRepository) {
+        super(repository, Reader.class);
         this.bookRepository = bookRepository;
         this.rentalRecordRepository = rentalRecordRepository;
     }
 
     @Override
     @Transactional
+    @SneakyThrows
     public void borrowBook(final Long id, final Long bookId, final Integer rentalDays) {
         final Optional<Reader> optionalReader = repository.findById(id);
         final Reader reader = optionalReader.orElseThrow(() -> new NoEntityException(id, entityClass.getTypeName()));
@@ -62,6 +66,7 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
 
     @Override
     @Transactional
+    @SneakyThrows
     public void refundBook(final Long id, final Long bookId, final String refundComment) {
         final Optional<Reader> optionalReader = repository.findById(id);
         final Reader reader = optionalReader.orElseThrow(() -> new NoEntityException(id, entityClass.getTypeName()));
@@ -86,7 +91,7 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
         }
         final Optional<Reader> optionalUpdatedReader = Optional.of(repository.save(reader));
         if (optionalUpdatedReader.isEmpty()) {
-            throw new UpdateEntityException(reader.getId(), entityClass.getTypeName())
+            throw new UpdateEntityException(reader.getId(), entityClass.getTypeName());
         }
 
         final Integer bookQuantity = book.getQuantity();
@@ -99,7 +104,7 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
         rentalRecord.setComment(refundComment);
         final Optional<RentalRecord> optionalRentalRecord = Optional.of(rentalRecordRepository.save(rentalRecord));
         if (optionalRentalRecord.isEmpty()) {
-            throw UpdateEntityException(rentalRecord.getId(), "RentalRecord");
+            throw new UpdateEntityException(rentalRecord.getId(), "RentalRecord");
         }
     }
 
