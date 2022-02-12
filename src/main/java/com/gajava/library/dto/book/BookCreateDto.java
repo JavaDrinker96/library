@@ -1,7 +1,7 @@
 package com.gajava.library.dto.book;
 
 import com.gajava.library.dto.BaseDto;
-import com.gajava.library.dto.author.AuthorShortDto;
+import com.gajava.library.dto.author.AuthorDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +18,6 @@ public class BookCreateDto extends BaseDto {
     private String description;
     private Integer quantity;
     private Boolean availability;
-    private Set<AuthorShortDto> authors;
+    private Set<AuthorDto> authors;
 
 }
