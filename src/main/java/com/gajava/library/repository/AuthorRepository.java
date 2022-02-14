@@ -4,5 +4,5 @@ import com.gajava.library.model.Author;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuthorRepository extends CommonRepository<Author> {
+public interface AuthorRepository extends BaseRepository<Author> {
 }

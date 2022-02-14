@@ -4,5 +4,5 @@ import com.gajava.library.model.Reader;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ReaderRepository extends CommonRepository<Reader> {
+public interface ReaderRepository extends BaseRepository<Reader> {
 }

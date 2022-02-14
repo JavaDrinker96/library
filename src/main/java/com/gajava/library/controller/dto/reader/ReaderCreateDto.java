@@ -1,7 +1,7 @@
-package com.gajava.library.dto.reader;
+package com.gajava.library.controller.dto.reader;
 
-import com.gajava.library.dto.BaseDto;
-import com.gajava.library.dto.book.BookDto;
+import com.gajava.library.controller.dto.BaseDto;
+import com.gajava.library.controller.dto.book.BookDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,9 +10,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ReaderDto extends BaseDto {
+public class ReaderCreateDto extends BaseDto {
 
-    private Long id;
     private String name;
     private String surname;
     private String patronymic;

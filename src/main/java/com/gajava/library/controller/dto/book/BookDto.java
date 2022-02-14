@@ -1,7 +1,7 @@
-package com.gajava.library.dto.book;
+package com.gajava.library.controller.dto.book;
 
-import com.gajava.library.dto.BaseDto;
-import com.gajava.library.dto.author.AuthorDto;
+import com.gajava.library.controller.dto.BaseDto;
+import com.gajava.library.controller.dto.author.AuthorDto;
 import lombok.Getter;
 import lombok.Setter;
 

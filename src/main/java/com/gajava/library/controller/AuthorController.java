@@ -1,9 +1,9 @@
 package com.gajava.library.controller;
 
+import com.gajava.library.controller.dto.author.AuthorCreateDto;
+import com.gajava.library.controller.dto.author.AuthorDto;
+import com.gajava.library.controller.dto.request.Pagination;
 import com.gajava.library.converter.AuthorConverter;
-import com.gajava.library.dto.author.AuthorCreateDto;
-import com.gajava.library.dto.author.AuthorDto;
-import com.gajava.library.dto.request.Pagination;
 import com.gajava.library.model.Author;
 import com.gajava.library.service.AuthorService;
 import org.modelmapper.ModelMapper;
@@ -19,11 +19,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/author")
 public class AuthorController {
 
-    private ModelMapper modelMapper;
-    private AuthorConverter converter;
-    private AuthorService authorService;
+    private final ModelMapper modelMapper;
+    private final AuthorConverter converter;
+    private final AuthorService authorService;
 
-    public AuthorController(ModelMapper modelMapper, AuthorConverter converter, AuthorService authorService) {
+    public AuthorController(final ModelMapper modelMapper,
+                            final AuthorConverter converter,
+                            final AuthorService authorService) {
+
         this.modelMapper = modelMapper;
         this.converter = converter;
         this.authorService = authorService;
@@ -33,7 +36,7 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> create(@RequestBody final AuthorCreateDto createDto) {
         final Author author = converter.convertAuthorCreateDtoToEntity(createDto);
         final AuthorDto authorDto = converter.convertEntityToAuthorDto(authorService.create(author));
-        return ResponseEntity.status(HttpStatus.OK).body(authorDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(authorDto);
     }
 
     @GetMapping(value = "/read/{id}")
@@ -57,8 +60,13 @@ public class AuthorController {
 
     @GetMapping(value = "/read-all")
     public ResponseEntity<List<AuthorDto>> readAll(@RequestBody final Pagination pagination) {
-        final List<Author> authors = authorService.readAll(PageRequest.of(pagination.getPage(), pagination.getSize()));
-        final List<AuthorDto> authorDtoList = authors.stream().map(converter::convertEntityToAuthorDto).collect(Collectors.toList());
+        final List<Author> authors = authorService
+                .readAll(PageRequest.of(pagination.getPage(), pagination.getSize()));
+
+        final List<AuthorDto> authorDtoList = authors.stream()
+                .map(converter::convertEntityToAuthorDto)
+                .collect(Collectors.toList());
+
         return ResponseEntity.status(HttpStatus.OK).body(authorDtoList);
     }
 

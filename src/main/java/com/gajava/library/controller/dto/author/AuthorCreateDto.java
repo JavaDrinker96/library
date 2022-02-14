@@ -1,4 +1,4 @@
-package com.gajava.library.dto.author;
+package com.gajava.library.controller.dto.author;
 
 import com.gajava.library.model.BaseEntity;
 import lombok.Getter;

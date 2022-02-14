@@ -18,7 +18,6 @@ public class BookServiceImpl extends AbstractService<Book, BookRepository> imple
     }
 
     @Override
-    @SneakyThrows
     public List<Book> getAvailableBooks(final Pageable pageable) {
         final List<Book> bookList = repository.findByAvailabilityIsTrue(pageable).getContent();
         if (bookList.isEmpty()) {
@@ -28,7 +27,6 @@ public class BookServiceImpl extends AbstractService<Book, BookRepository> imple
     }
 
     @Override
-    @SneakyThrows
     public List<Book> findByTitle(final String title, final Pageable pageable) {
         final List<Book> bookList = repository.findByTitleContaining(title, pageable).getContent();
         if (bookList.isEmpty()) {
@@ -38,7 +36,6 @@ public class BookServiceImpl extends AbstractService<Book, BookRepository> imple
     }
 
     @Override
-    @SneakyThrows
     public List<Book> findByGenre(final String genre, final Pageable pageable) {
         final List<Book> bookList = repository.findByGenreContaining(genre, pageable).getContent();
         if (bookList.isEmpty()) {
@@ -48,7 +45,6 @@ public class BookServiceImpl extends AbstractService<Book, BookRepository> imple
     }
 
     @Override
-    @SneakyThrows
     public List<Book> findByAuthor(final Author author, final Pageable pageable, final Boolean expandSearch) {
         final String name = author.getName();
         final String surname = author.getSurname();

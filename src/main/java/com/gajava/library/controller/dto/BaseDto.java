@@ -1,4 +1,4 @@
-package com.gajava.library.dto;
+package com.gajava.library.controller.dto;
 
 import java.io.Serializable;
 

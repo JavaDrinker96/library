@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface RentalRecordRepository extends CommonRepository<RentalRecord> {
+public interface RentalRecordRepository extends BaseRepository<RentalRecord> {
 
     @Query("SELECT rr FROM RentalRecord rr WHERE rr.reader.id = :id")
     Page<RentalRecord> findByReaderId(@Param("id") Long readerId, Pageable pageable);

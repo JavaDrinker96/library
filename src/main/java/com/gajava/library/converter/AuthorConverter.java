@@ -1,15 +1,31 @@
 package com.gajava.library.converter;
 
-import com.gajava.library.dto.author.AuthorCreateDto;
-import com.gajava.library.dto.author.AuthorDto;
+import com.gajava.library.controller.dto.author.AuthorCreateDto;
+import com.gajava.library.controller.dto.author.AuthorDto;
 import com.gajava.library.model.Author;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
-public interface AuthorConverter {
+@Component
+public class AuthorConverter {
 
-    Author convertAuthorCreateDtoToEntity(AuthorCreateDto dto);
+    private final ModelMapper modelMapper;
 
-    AuthorDto convertEntityToAuthorDto(Author entity);
+    public AuthorConverter(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
-    Author convertAuthorDtoToEntity(AuthorDto dto);
+    public Author convertAuthorCreateDtoToEntity(final AuthorCreateDto dto) {
+        return modelMapper.map(dto, Author.class);
+    }
+
+
+    public AuthorDto convertEntityToAuthorDto(final Author entity) {
+        return modelMapper.map(entity, AuthorDto.class);
+    }
+
+    public Author convertAuthorDtoToEntity(final AuthorDto dto) {
+        return modelMapper.map(dto, Author.class);
+    }
 
 }

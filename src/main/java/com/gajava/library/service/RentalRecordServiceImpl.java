@@ -3,7 +3,6 @@ package com.gajava.library.service;
 import com.gajava.library.exception.NoEntityException;
 import com.gajava.library.model.RentalRecord;
 import com.gajava.library.repository.RentalRecordRepository;
-import lombok.SneakyThrows;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,6 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    @SneakyThrows
     public List<RentalRecord> findByReader(final Long id, final Pageable pageable) {
         final List<RentalRecord> rentalRecordList = repository.findByReaderId(id, pageable).getContent();
         if (rentalRecordList.isEmpty()) {
@@ -28,7 +26,6 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    @SneakyThrows
     public List<RentalRecord> findByBook(final Long id, final Pageable pageable) {
         final List<RentalRecord> rentalRecordList = repository.findByBookId(id, pageable).getContent();
         if (rentalRecordList.isEmpty()) {
@@ -38,7 +35,6 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    @SneakyThrows
     public List<RentalRecord> findByTakeAfter(final LocalDate date, final Pageable pageable) {
         final List<RentalRecord> rentalRecordList = repository.findByRentalStartDateAfter(date, pageable).getContent();
         if (rentalRecordList.isEmpty()) {
@@ -48,7 +44,6 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    @SneakyThrows
     public List<RentalRecord> findByReturnAfter(final LocalDate date, final Pageable pageable) {
         final List<RentalRecord> rentalRecordList = repository.findByActualReturnDateAfter(date, pageable).getContent();
         if (rentalRecordList.isEmpty()) {
@@ -58,7 +53,6 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    @SneakyThrows
     public List<RentalRecord> findRecordsBorrowedBooks(Pageable pageable) {
         final List<RentalRecord> rentalRecordList = repository.findByActualReturnDateIsNull(pageable).getContent();
         if (rentalRecordList.isEmpty()) {
@@ -68,7 +62,6 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    @SneakyThrows
     public List<RentalRecord> findRecordsRefundBooks(Pageable pageable) {
         final List<RentalRecord> rentalRecordList = repository.findByActualReturnDateIsNotNull(pageable).getContent();
         if (rentalRecordList.isEmpty()) {

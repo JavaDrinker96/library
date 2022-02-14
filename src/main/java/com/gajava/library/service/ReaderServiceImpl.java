@@ -23,6 +23,7 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
 
     final Integer LOWER_RATING_LIMIT = 30;
     final Integer RATING_PENALTY = 5;
+    final String COMMENT_BEFORE_REFUND = "Not refund yet";
 
     final BookRepository bookRepository;
     final RentalRecordRepository rentalRecordRepository;
@@ -37,7 +38,6 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
 
     @Override
     @Transactional
-    @SneakyThrows
     public void borrowBook(final Long id, final Long bookId, final Integer rentalDays) {
         final Optional<Reader> optionalReader = repository.findById(id);
         final Reader reader = optionalReader.orElseThrow(() -> new NoEntityException(id, entityClass.getTypeName()));
@@ -57,6 +57,7 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
                 .reader(updatedReader)
                 .rentalStartDate(LocalDate.now())
                 .rentalEndDate(LocalDate.now().plusDays(rentalDays))
+                .comment(COMMENT_BEFORE_REFUND)
                 .build();
 
         if (rentalRecordRepository.save(rentalRecord) == null) {
@@ -66,7 +67,6 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
 
     @Override
     @Transactional
-    @SneakyThrows
     public void refundBook(final Long id, final Long bookId, final String refundComment) {
         final Optional<Reader> optionalReader = repository.findById(id);
         final Reader reader = optionalReader.orElseThrow(() -> new NoEntityException(id, entityClass.getTypeName()));
