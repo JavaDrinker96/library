@@ -23,7 +23,7 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
 
     final Integer LOWER_RATING_LIMIT = 30;
     final Integer RATING_PENALTY = 5;
-    final String COMMENT_BEFORE_REFUND = "Not refund yet";
+    final String COMMENT_BEFORE_REFUND = null;
 
     final BookRepository bookRepository;
     final RentalRecordRepository rentalRecordRepository;
@@ -52,17 +52,15 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
         final Optional<Reader> optionalUpdatedReader = Optional.of(repository.save(reader));
         final Reader updatedReader = optionalUpdatedReader.orElseThrow(() -> new UpdateEntityException(reader.getId(), entityClass.getTypeName()));
 
-        final RentalRecord rentalRecord = RentalRecord.builder()
-                .book(book)
-                .reader(updatedReader)
-                .rentalStartDate(LocalDate.now())
-                .rentalEndDate(LocalDate.now().plusDays(rentalDays))
-                .comment(COMMENT_BEFORE_REFUND)
-                .build();
+        final RentalRecord rentalRecord = new RentalRecord();
+        rentalRecord.setBook(book);
+        rentalRecord.setReader(updatedReader);
+        rentalRecord.setRentalStartDate(LocalDate.now());
+        rentalRecord.setRentalEndDate(LocalDate.now().plusDays(rentalDays));
+        rentalRecord.setComment(COMMENT_BEFORE_REFUND);
 
-        if (rentalRecordRepository.save(rentalRecord) == null) {
-            throw new UpdateEntityException(rentalRecord.getId(), "RentalRecord");
-        }
+        Optional.of(rentalRecordRepository.save(rentalRecord))
+                .orElseThrow(() -> new UpdateEntityException(rentalRecord.getId(), "RentalRecord"));
     }
 
     @Override
@@ -79,7 +77,7 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
             throw new NoEntityException("RentalRecord");
         }
 
-        final Optional<Book> optionalUserRemoveBook = reader.getBooks().stream().filter(x -> x.getId() == bookId).findFirst();
+        final Optional<Book> optionalUserRemoveBook = reader.getBooks().stream().filter(x -> x.getId().equals(bookId)).findFirst();
         final Book userRemoveBook = optionalUserRemoveBook.orElseThrow(() -> new NoItemException(entityClass.getTypeName(), "Book", bookId));
 
         reader.getBooks().remove(userRemoveBook);

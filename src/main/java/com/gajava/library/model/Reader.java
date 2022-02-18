@@ -1,6 +1,7 @@
 package com.gajava.library.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -9,8 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 public class Reader extends Person {
 

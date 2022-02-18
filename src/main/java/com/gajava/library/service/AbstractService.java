@@ -6,7 +6,6 @@ import com.gajava.library.exception.SaveEntityException;
 import com.gajava.library.exception.UpdateEntityException;
 import com.gajava.library.model.BaseEntity;
 import com.gajava.library.repository.BaseRepository;
-import lombok.SneakyThrows;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -34,15 +33,14 @@ public class AbstractService<E extends BaseEntity, R extends BaseRepository<E>> 
             throw new NullIdException(entityClass.getTypeName());
         }
         final Optional<E> optionalUpdatedEntity = Optional.of(repository.save(newEntity));
-        final E updatedEntity = optionalUpdatedEntity
+        return optionalUpdatedEntity
                 .orElseThrow(() -> new UpdateEntityException(newEntity.getId(), entityClass.getTypeName()));
-        return updatedEntity;
     }
 
     @Override
     public E read(final Long id) {
         final Optional<E> optionalFoundEntity = repository.findById(id);
-        return optionalFoundEntity.orElseThrow(() -> new NoEntityException());
+        return optionalFoundEntity.orElseThrow(NoEntityException::new);
     }
 
     @Override

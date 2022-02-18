@@ -1,6 +1,6 @@
 package com.gajava.library.handler;
 
-import com.gajava.library.controller.dto.response.ErrorResponse;
+import com.gajava.library.controller.response.ErrorResponse;
 import com.gajava.library.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +36,8 @@ public class Handler {
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(EmptyNullParameterException.class)
-    public ResponseEntity<ErrorResponse> handleEmptyNullParameterException(final EmptyNullParameterException e) {
+    @ExceptionHandler(NullParameterException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyNullParameterException(final NullParameterException e) {
         final ErrorResponse response = ErrorResponse.builder()
                 .error("EmptyNullParameterException")
                 .message(e.getMessage())
@@ -94,6 +94,18 @@ public class Handler {
                 .build();
 
         return new ResponseEntity<>(response,HttpStatus.BAD_GATEWAY);
+    }
+
+    @ExceptionHandler(BadDtoException.class)
+    public ResponseEntity<ErrorResponse> handleBadDtoException(final BadDtoException e) {
+        final ErrorResponse response = ErrorResponse.builder()
+                .error("BadDtoException")
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST)
+                .timestamp(now())
+                .build();
+
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
 }

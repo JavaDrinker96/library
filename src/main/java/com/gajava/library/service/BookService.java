@@ -1,6 +1,5 @@
 package com.gajava.library.service;
 
-import com.gajava.library.model.Author;
 import com.gajava.library.model.Book;
 import org.springframework.data.domain.Pageable;
 
@@ -14,6 +13,8 @@ public interface BookService extends BaseService<Book> {
 
     List<Book> findByGenre(String genre, Pageable pageable);
 
-    List<Book> findByAuthor(Author author, Pageable pageable, Boolean expandSearch);
+    List<Book> findByAuthor(String name, String surname, String patronymic, Pageable pageable);
+
+    List<Book> findAll(Pageable pageable);
 
 }

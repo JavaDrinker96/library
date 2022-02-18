@@ -16,14 +16,14 @@ public interface BookRepository extends BaseRepository<Book> {
 
     Page<Book> findByGenreContaining(String genre, Pageable pageable);
 
-    @Query("SELECT b FROM Book b JOIN b.authors a WHERE a.name LIKE %:name% OR a.surname LIKE %:surname% " +
-            "OR a.patronymic LIKE %:patronymic%")
-    Page<Book> findByAuthorsAdvanced(@Param("name") String name, @Param("surname") String surname,
-                                     @Param("patronymic") String patronymic, Pageable pageable);
-
-    @Query("SELECT b FROM Book b JOIN b.authors a WHERE a.name LIKE %:name% AND a.surname LIKE %:surname% " +
-            "AND a.patronymic LIKE %:patronymic%")
-    Page<Book> findByAuthorsStrict(@Param("name") String name, @Param("surname") String surname,
+    @Query("SELECT b FROM Book b JOIN b.authors a WHERE " +
+            "a.name LIKE %:name% AND a.surname LIKE %:surname% AND a.patronymic LIKE %:patronymic% " +
+            "OR a.name LIKE %:name% AND a.surname LIKE %:patronymic% AND a.patronymic LIKE %:surname% " +
+            "OR a.name LIKE %:surname% AND a.surname LIKE %:patronymic% AND a.patronymic LIKE %:name% " +
+            "OR a.name LIKE %:surname% AND a.surname LIKE %:name% AND a.patronymic LIKE %:patronymic% " +
+            "OR a.name LIKE %:patronymic% AND a.surname LIKE %:surname% AND a.patronymic LIKE %:name% " +
+            "OR a.name LIKE %:patronymic% AND a.surname LIKE %:name% AND a.patronymic LIKE %:surname%")
+    Page<Book> findByAuthor(@Param("name") String name, @Param("surname") String surname,
                                    @Param("patronymic") String patronymic, Pageable pageable);
 
 }

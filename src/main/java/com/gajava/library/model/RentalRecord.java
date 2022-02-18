@@ -1,6 +1,7 @@
 package com.gajava.library.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,8 +12,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 public class RentalRecord extends BaseEntity {
 
@@ -32,7 +31,6 @@ public class RentalRecord extends BaseEntity {
 
     private LocalDate actualReturnDate;
 
-    @Column(nullable = false)
     private String comment;
 
 }

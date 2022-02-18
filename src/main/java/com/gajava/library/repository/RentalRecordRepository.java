@@ -13,11 +13,24 @@ import java.util.List;
 @Repository
 public interface RentalRecordRepository extends BaseRepository<RentalRecord> {
 
-    @Query("SELECT rr FROM RentalRecord rr WHERE rr.reader.id = :id")
-    Page<RentalRecord> findByReaderId(@Param("id") Long readerId, Pageable pageable);
+    @Query("SELECT rr FROM RentalRecord rr JOIN rr.reader r WHERE " +
+            "r.name LIKE %:name% AND r.surname LIKE %:surname% AND r.patronymic LIKE %:patronymic% " +
+            "OR r.name LIKE %:name% AND r.surname LIKE %:patronymic% AND r.patronymic LIKE %:surname% " +
+            "OR r.name LIKE %:surname% AND r.surname LIKE %:patronymic% AND r.patronymic LIKE %:name% " +
+            "OR r.name LIKE %:surname% AND r.surname LIKE %:name% AND r.patronymic LIKE %:patronymic% " +
+            "OR r.name LIKE %:patronymic% AND r.surname LIKE %:surname% AND r.patronymic LIKE %:name% " +
+            "OR r.name LIKE %:patronymic% AND r.surname LIKE %:name% AND r.patronymic LIKE %:surname%")
+    Page<RentalRecord> findByReader(@Param("name") String name, @Param("surname") String surname,
+                                    @Param("patronymic") String patronymic, Pageable pageable);
+
+    @Query("SELECT rr FROM RentalRecord rr JOIN rr.book b WHERE b.title LIKE %:title%")
+    Page<RentalRecord> findByBook(@Param("title") String title, Pageable pageable);
 
     @Query("SELECT rr FROM RentalRecord rr WHERE rr.book.id = :id")
-    Page<RentalRecord> findByBookId(@Param("id") Long bookId, Pageable pageable);
+    RentalRecord findByBookId(@Param("id") Long id);
+
+    @Query("SELECT rr FROM RentalRecord rr WHERE rr.reader.id = :id")
+    RentalRecord findByReaderId(@Param("id") Long id);
 
     Page<RentalRecord> findByRentalStartDateAfter(LocalDate date, Pageable pageable);
 

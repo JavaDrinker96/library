@@ -1,4 +1,4 @@
-package com.gajava.library.controller.dto.request.reader;
+package com.gajava.library.controller.request.reader;
 
 import lombok.Getter;
 import lombok.Setter;

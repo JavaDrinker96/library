@@ -1,15 +1,15 @@
 package com.gajava.library.controller.dto.author;
 
-import com.gajava.library.model.BaseEntity;
+import com.gajava.library.controller.dto.BaseDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthorCreateDto extends BaseEntity {
+@NoArgsConstructor
+public class AuthorCreateDto extends BaseDto {
 
-    private String name;
-    private String surname;
-    private String patronymic;
+    private String fullName;
 
 }

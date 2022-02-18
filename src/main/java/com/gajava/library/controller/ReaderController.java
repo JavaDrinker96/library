@@ -2,14 +2,16 @@ package com.gajava.library.controller;
 
 import com.gajava.library.controller.dto.reader.ReaderCreateDto;
 import com.gajava.library.controller.dto.reader.ReaderDto;
-import com.gajava.library.controller.dto.request.Pagination;
-import com.gajava.library.controller.dto.request.reader.ReaderBorrowRequest;
-import com.gajava.library.controller.dto.request.reader.ReaderRefundRequest;
+import com.gajava.library.controller.request.Pagination;
+import com.gajava.library.controller.request.reader.ReaderBorrowRequest;
+import com.gajava.library.controller.request.reader.ReaderRefundRequest;
 import com.gajava.library.converter.ReaderConverter;
 import com.gajava.library.model.Reader;
 import com.gajava.library.service.ReaderService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +19,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/reader")
 public class ReaderController {
 
-    private final ModelMapper modelMapper;
     private final ReaderConverter converter;
     private final ReaderService readerService;
-
-    public ReaderController(final ModelMapper modelMapper,
-                            final ReaderConverter converter,
-                            final ReaderService bookService) {
-
-        this.modelMapper = modelMapper;
-        this.converter = converter;
-        this.readerService = bookService;
-    }
 
     @PostMapping(value = "/create")
     public ResponseEntity<ReaderDto> create(@RequestBody final ReaderCreateDto createDto) {
@@ -61,9 +54,18 @@ public class ReaderController {
     }
 
     @GetMapping(value = "/read-all")
-    public ResponseEntity<List<ReaderDto>> readAll(@RequestBody final Pagination pagination) {
+    public ResponseEntity<List<ReaderDto>> readAll(@RequestBody final Pagination request) {
+        final PageRequest pageRequest = PageRequest.of(
+                request.getPage(),
+                request.getSize(),
+                Sort.by(
+                        request.getSorting().getDirection(),
+                        request.getSorting().getProperty()
+                )
+        );
+
         final List<Reader> readers = readerService
-                .readAll(PageRequest.of(pagination.getPage(), pagination.getSize()));
+                .readAll(pageRequest);
 
         final List<ReaderDto> readerDtoList = readers.stream()
                 .map(converter::convertEntityToReaderDto)

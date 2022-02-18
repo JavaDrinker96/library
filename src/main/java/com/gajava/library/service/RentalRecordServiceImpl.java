@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RentalRecordServiceImpl extends AbstractService<RentalRecord, RentalRecordRepository> implements RentalRecordService {
@@ -17,8 +18,14 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    public List<RentalRecord> findByReader(final Long id, final Pageable pageable) {
-        final List<RentalRecord> rentalRecordList = repository.findByReaderId(id, pageable).getContent();
+    public List<RentalRecord> findByReader(final String name,
+                                           final String surname,
+                                           final String patronymic,
+                                           final Pageable pageable) {
+
+        final List<RentalRecord> rentalRecordList = repository
+                .findByReader(name, surname, patronymic, pageable).getContent();
+
         if (rentalRecordList.isEmpty()) {
             throw new NoEntityException(entityClass.getTypeName());
         }
@@ -26,12 +33,24 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    public List<RentalRecord> findByBook(final Long id, final Pageable pageable) {
-        final List<RentalRecord> rentalRecordList = repository.findByBookId(id, pageable).getContent();
+    public List<RentalRecord> findByBook(final String title, final Pageable pageable) {
+        final List<RentalRecord> rentalRecordList = repository.findByBook(title, pageable).getContent();
         if (rentalRecordList.isEmpty()) {
             throw new NoEntityException(entityClass.getTypeName());
         }
         return rentalRecordList;
+    }
+
+    @Override
+    public RentalRecord findByBookId(final Long id) {
+        final Optional<RentalRecord> optionalFoundRentalRecord = Optional.of(repository.findByBookId(id));
+        return optionalFoundRentalRecord.orElseThrow(() -> new NoEntityException(id, RentalRecord.class.getTypeName()));
+    }
+
+    @Override
+    public RentalRecord findByReaderId(Long id) {
+        final Optional<RentalRecord> optionalFoundRentalRecord = Optional.of(repository.findByReaderId(id));
+        return optionalFoundRentalRecord.orElseThrow(() -> new NoEntityException(id, RentalRecord.class.getTypeName()));
     }
 
     @Override
@@ -53,17 +72,11 @@ public class RentalRecordServiceImpl extends AbstractService<RentalRecord, Renta
     }
 
     @Override
-    public List<RentalRecord> findRecordsBorrowedBooks(Pageable pageable) {
-        final List<RentalRecord> rentalRecordList = repository.findByActualReturnDateIsNull(pageable).getContent();
-        if (rentalRecordList.isEmpty()) {
-            throw new NoEntityException(entityClass.getTypeName());
-        }
-        return rentalRecordList;
-    }
+    public List<RentalRecord> findByRentalStatus(final Boolean refund, final Pageable pageable) {
+        final List<RentalRecord> rentalRecordList = refund
+                ? repository.findByActualReturnDateIsNotNull(pageable).getContent()
+                : repository.findByActualReturnDateIsNull(pageable).getContent();
 
-    @Override
-    public List<RentalRecord> findRecordsRefundBooks(Pageable pageable) {
-        final List<RentalRecord> rentalRecordList = repository.findByActualReturnDateIsNotNull(pageable).getContent();
         if (rentalRecordList.isEmpty()) {
             throw new NoEntityException(entityClass.getTypeName());
         }

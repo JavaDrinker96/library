@@ -1,4 +1,4 @@
-package com.gajava.library.controller.dto.response;
+package com.gajava.library.controller.response;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;

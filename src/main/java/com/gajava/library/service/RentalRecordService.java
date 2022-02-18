@@ -2,22 +2,25 @@ package com.gajava.library.service;
 
 import com.gajava.library.model.RentalRecord;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface RentalRecordService extends BaseService<RentalRecord> {
 
-    List<RentalRecord> findByReader(Long id, Pageable pageable);
+    List<RentalRecord> findByReader(String name, String surname, String patronymic, Pageable pageable);
 
-    List<RentalRecord> findByBook(Long id, Pageable pageable);
+    List<RentalRecord> findByBook(String title, Pageable pageable);
+
+    RentalRecord findByBookId(Long id);
+
+    RentalRecord findByReaderId(Long id);
 
     List<RentalRecord> findByTakeAfter(LocalDate date, Pageable pageable);
 
     List<RentalRecord> findByReturnAfter(LocalDate date, Pageable pageable);
 
-    List<RentalRecord> findRecordsBorrowedBooks(Pageable pageable);
-
-    List<RentalRecord> findRecordsRefundBooks(Pageable pageable);
+    List<RentalRecord> findByRentalStatus(Boolean refund, Pageable pageable);
 
 }

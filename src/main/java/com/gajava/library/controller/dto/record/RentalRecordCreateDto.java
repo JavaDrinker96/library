@@ -4,12 +4,14 @@ import com.gajava.library.controller.dto.BaseDto;
 import com.gajava.library.controller.dto.book.BookDto;
 import com.gajava.library.controller.dto.reader.ReaderDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class RentalRecordCreateDto extends BaseDto {
 
     private BookDto book;
