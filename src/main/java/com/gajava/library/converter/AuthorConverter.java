@@ -11,7 +11,7 @@ public class AuthorConverter {
 
     private final ModelMapper modelMapper;
 
-    public AuthorConverter(ModelMapper modelMapper) {
+    public AuthorConverter(final ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 

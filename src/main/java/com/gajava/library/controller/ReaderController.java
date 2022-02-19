@@ -9,7 +9,6 @@ import com.gajava.library.converter.ReaderConverter;
 import com.gajava.library.model.Reader;
 import com.gajava.library.service.ReaderService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -27,33 +26,33 @@ public class ReaderController {
     private final ReaderConverter converter;
     private final ReaderService readerService;
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "admin/create")
     public ResponseEntity<ReaderDto> create(@RequestBody final ReaderCreateDto createDto) {
         final Reader reader = converter.convertReaderCreateDtoToEntity(createDto);
         final ReaderDto readerDto = converter.convertEntityToReaderDto(readerService.create(reader));
         return ResponseEntity.status(HttpStatus.CREATED).body(readerDto);
     }
 
-    @GetMapping(value = "/read/{id}")
+    @GetMapping(value = "admin/read/{id}")
     public ResponseEntity<ReaderDto> read(@PathVariable final Long id) {
         final ReaderDto readerDto = converter.convertEntityToReaderDto(readerService.read(id));
         return ResponseEntity.status(HttpStatus.OK).body(readerDto);
     }
 
-    @PutMapping(value = "/update")
+    @PutMapping(value = "admin/update")
     public ResponseEntity<ReaderDto> update(@RequestBody final ReaderDto readerDto) {
         final Reader reader = converter.convertReaderDtoToEntity(readerDto);
         final ReaderDto updatedReaderDto = converter.convertEntityToReaderDto(readerService.update(reader));
         return ResponseEntity.status(HttpStatus.OK).body(updatedReaderDto);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "admin/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable final Long id) {
         readerService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping(value = "/read-all")
+    @GetMapping(value = "admin/read-all")
     public ResponseEntity<List<ReaderDto>> readAll(@RequestBody final Pagination request) {
         final PageRequest pageRequest = PageRequest.of(
                 request.getPage(),
@@ -74,7 +73,7 @@ public class ReaderController {
         return ResponseEntity.status(HttpStatus.OK).body(readerDtoList);
     }
 
-    @PutMapping(value = "/borrow")
+    @PutMapping(value = "user/borrow")
     public ResponseEntity<?> borrowBook(@RequestBody final ReaderBorrowRequest request) {
         final Long readerId = request.getReaderId();
         final Long bookId = request.getBookId();
@@ -84,7 +83,7 @@ public class ReaderController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PutMapping(value = "/refund")
+    @PutMapping(value = "user/refund")
     public ResponseEntity<?> refundBook(@RequestBody final ReaderRefundRequest request) {
         final Long readerId = request.getReaderId();
         final Long bookId = request.getBookId();

@@ -1,7 +1,6 @@
 package com.gajava.library.service;
 
 import com.gajava.library.exception.NoEntityException;
-import com.gajava.library.model.Author;
 import com.gajava.library.model.Book;
 import com.gajava.library.repository.BookRepository;
 import org.springframework.data.domain.Pageable;

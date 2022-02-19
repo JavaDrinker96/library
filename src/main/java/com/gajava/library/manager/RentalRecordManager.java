@@ -12,6 +12,6 @@ public interface RentalRecordManager {
 
     List<RentalRecord> findByFilters(RecordFilter filter, String contains, LocalDate date, Boolean refund, Pageable pageable);
 
-    RentalRecord findById(Long id,RecordIdFilter filter);
+    RentalRecord findById(Long id, RecordIdFilter filter);
 
 }

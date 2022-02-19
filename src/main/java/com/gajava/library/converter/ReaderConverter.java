@@ -1,7 +1,7 @@
 package com.gajava.library.converter;
 
-import com.gajava.library.controller.dto.reader.ReaderDto;
 import com.gajava.library.controller.dto.reader.ReaderCreateDto;
+import com.gajava.library.controller.dto.reader.ReaderDto;
 import com.gajava.library.model.Reader;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

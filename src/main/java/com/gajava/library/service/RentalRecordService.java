@@ -2,7 +2,6 @@ package com.gajava.library.service;
 
 import com.gajava.library.model.RentalRecord;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;

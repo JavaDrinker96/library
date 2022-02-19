@@ -4,6 +4,7 @@ import com.gajava.library.controller.response.ErrorResponse;
 import com.gajava.library.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -21,7 +22,7 @@ public class Handler {
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NoItemException.class)
@@ -33,7 +34,7 @@ public class Handler {
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NullParameterException.class)
@@ -45,7 +46,7 @@ public class Handler {
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NullIdException.class)
@@ -57,7 +58,7 @@ public class Handler {
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(LowReaderRatingException.class)
@@ -69,7 +70,7 @@ public class Handler {
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(SaveEntityException.class)
@@ -81,7 +82,7 @@ public class Handler {
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(UpdateEntityException.class)
@@ -93,7 +94,7 @@ public class Handler {
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(BadDtoException.class)
@@ -105,7 +106,19 @@ public class Handler {
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(final UsernameNotFoundException e) {
+        final ErrorResponse response = ErrorResponse.builder()
+                .error("UsernameNotFoundException")
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_GATEWAY)
+                .timestamp(now())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
     }
 
 }

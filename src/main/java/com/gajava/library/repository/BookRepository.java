@@ -24,6 +24,6 @@ public interface BookRepository extends BaseRepository<Book> {
             "OR a.name LIKE %:patronymic% AND a.surname LIKE %:surname% AND a.patronymic LIKE %:name% " +
             "OR a.name LIKE %:patronymic% AND a.surname LIKE %:name% AND a.patronymic LIKE %:surname%")
     Page<Book> findByAuthor(@Param("name") String name, @Param("surname") String surname,
-                                   @Param("patronymic") String patronymic, Pageable pageable);
+                            @Param("patronymic") String patronymic, Pageable pageable);
 
 }

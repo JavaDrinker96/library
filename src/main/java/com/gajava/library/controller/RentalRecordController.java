@@ -27,33 +27,33 @@ public class RentalRecordController {
     private final RentalRecordService rentalRecordService;
     private final RentalRecordManager manager;
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "admin/create")
     public ResponseEntity<RentalRecordDto> create(@RequestBody final RentalRecordCreateDto createDto) {
         final RentalRecord record = converter.convertRentalRecordCreateDtoToEntity(createDto);
         final RentalRecordDto recordDto = converter.convertEntityToRentalRecordDto(rentalRecordService.create(record));
         return ResponseEntity.status(HttpStatus.CREATED).body(recordDto);
     }
 
-    @GetMapping(value = "/read/{id}")
+    @GetMapping(value = "admin/read/{id}")
     public ResponseEntity<RentalRecordDto> read(@PathVariable final Long id) {
         final RentalRecordDto recordDto = converter.convertEntityToRentalRecordDto(rentalRecordService.read(id));
         return ResponseEntity.status(HttpStatus.OK).body(recordDto);
     }
 
-    @PutMapping(value = "/update")
+    @PutMapping(value = "admin/update")
     public ResponseEntity<RentalRecordDto> update(@RequestBody final RentalRecordDto recordDto) {
         final RentalRecord record = converter.convertRentalRecordDtoToEntity(recordDto);
         final RentalRecordDto updatedRecordDto = converter.convertEntityToRentalRecordDto(rentalRecordService.update(record));
         return ResponseEntity.status(HttpStatus.OK).body(updatedRecordDto);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "admin/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable final Long id) {
         rentalRecordService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping(value = "/read-all")
+    @GetMapping(value = "admin/read-all")
     public ResponseEntity<List<RentalRecordDto>> readAll(@RequestBody final RecordRequest request) {
 
         final PageRequest pageRequest = PageRequest.of(
@@ -80,7 +80,7 @@ public class RentalRecordController {
         return ResponseEntity.status(HttpStatus.OK).body(recordDtoList);
     }
 
-    @GetMapping(value = "/find-by")
+    @GetMapping(value = "admin/find-by")
     public ResponseEntity<RentalRecordDto> findById(@RequestBody final RecordIdRequest request) {
         final RentalRecord record = manager.findById(request.getId(), request.getIdFilter());
         final RentalRecordDto recordDto = converter.convertEntityToRentalRecordDto(record);

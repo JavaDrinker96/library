@@ -1,7 +1,6 @@
 package com.gajava.library.manager;
 
 import com.gajava.library.controller.request.book.BookFilter;
-import com.gajava.library.model.Author;
 import com.gajava.library.model.Book;
 import org.springframework.data.domain.Pageable;
 

@@ -7,7 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BookConverter  {
+public class BookConverter {
 
     private final ModelMapper modelMapper;
 

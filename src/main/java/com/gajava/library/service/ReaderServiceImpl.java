@@ -10,7 +10,6 @@ import com.gajava.library.model.RentalRecord;
 import com.gajava.library.repository.BookRepository;
 import com.gajava.library.repository.ReaderRepository;
 import com.gajava.library.repository.RentalRecordRepository;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
