@@ -1,5 +1,8 @@
 package com.gajava.library.service;
 
+import com.gajava.library.exception.AuthenticationLoginException;
+import com.gajava.library.exception.AuthenticationPasswordException;
+import com.gajava.library.exception.SaveEntityException;
 import com.gajava.library.model.Role;
 import com.gajava.library.model.User;
 import com.gajava.library.repository.RoleRepository;
@@ -10,13 +13,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder  passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserServiceImpl(final UserRepository userRepository,
                            final RoleRepository roleRepository) {
@@ -30,22 +32,23 @@ public class UserServiceImpl implements UserService {
         final Role userRole = roleRepository.findByName("ROLE_USER");
         user.setRole(userRole);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        return Optional.ofNullable(userRepository.save(user))
+                .orElseThrow(() -> new SaveEntityException(User.class.getTypeName()));
     }
 
     @Override
     public User findByLogin(final String login) {
-        return userRepository.findByLogin(login);
+        return Optional.ofNullable(userRepository.findByLogin(login))
+                .orElseThrow(AuthenticationLoginException::new);
     }
 
     @Override
     public User findByLoginAndPassword(final String login, final String password) {
-        Optional<User> optionalUser = Optional.of(findByLogin(login));
-        if (optionalUser.isPresent()) {
-            if (passwordEncoder.matches(password, optionalUser.get().getPassword())) {
-                return optionalUser.get();
-            }
+        final User user = findByLogin(login);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new AuthenticationPasswordException();
         }
-        return null;
+        return user;
     }
+
 }

@@ -23,8 +23,8 @@ public class AbstractService<E extends BaseEntity, R extends BaseRepository<E>> 
 
     @Override
     public E create(final E entity) {
-        final Optional<E> optionalSavedEntity = Optional.of(repository.save(entity));
-        return optionalSavedEntity.orElseThrow(() -> new SaveEntityException(entityClass.getTypeName()));
+        return Optional.ofNullable(repository.save(entity))
+                .orElseThrow(() -> new SaveEntityException(entityClass.getTypeName()));
     }
 
     @Override
@@ -32,15 +32,13 @@ public class AbstractService<E extends BaseEntity, R extends BaseRepository<E>> 
         if (newEntity.getId() == null) {
             throw new NullIdException(entityClass.getTypeName());
         }
-        final Optional<E> optionalUpdatedEntity = Optional.of(repository.save(newEntity));
-        return optionalUpdatedEntity
+        return Optional.ofNullable(repository.save(newEntity))
                 .orElseThrow(() -> new UpdateEntityException(newEntity.getId(), entityClass.getTypeName()));
     }
 
     @Override
     public E read(final Long id) {
-        final Optional<E> optionalFoundEntity = repository.findById(id);
-        return optionalFoundEntity.orElseThrow(NoEntityException::new);
+        return repository.findById(id).orElseThrow(NoEntityException::new);
     }
 
     @Override

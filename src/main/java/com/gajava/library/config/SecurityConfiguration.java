@@ -1,6 +1,6 @@
-package com.gajava.library.configuration;
+package com.gajava.library.config;
 
-import com.gajava.library.configuration.jwt.JwtFilter;
+import com.gajava.library.config.jwt.JwtFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,18 +26,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/author/admin/**").hasRole( "ADMIN")
-                .antMatchers("/author/user/**").hasAnyRole("USER", "ADMIN")
 
-                .antMatchers("/book/admin/**").hasRole( "ADMIN")
-                .antMatchers("/book/user/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/author/read-all").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/author/**").hasRole("ADMIN")
 
-                .antMatchers("/reader/admin/**").hasRole( "ADMIN")
-                .antMatchers("/reader/user/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/book/read-all").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/book/**").hasRole("ADMIN")
 
-                .antMatchers("/record/admin/**").hasRole( "ADMIN")
-                .antMatchers("/record/user/**").hasAnyRole("USER", "ADMIN")
-
+                .antMatchers("/reader/**").hasRole("ADMIN")
+                .antMatchers("/record").hasRole("ADMIN")
 
                 .antMatchers("/register").permitAll()
                 .antMatchers("/auth").permitAll()

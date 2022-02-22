@@ -1,8 +1,8 @@
 package com.gajava.library.exception;
 
-public class BadDtoException extends RuntimeException {
+public class BadRequestException extends RuntimeException {
 
-    public BadDtoException() {
+    public BadRequestException() {
         super("The transferred dto does not meet the requirements");
     }
 }

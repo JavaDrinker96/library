@@ -1,8 +1,7 @@
-package com.gajava.library.configuration.jwt;
+package com.gajava.library.config.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.gajava.library.exception.InvalidTokenException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -33,33 +32,21 @@ public class JwtProvider {
                 .compact();
     }
 
-    //TODO: clean it
-//    public boolean validateToken(final String token) {
-//        try {
-//            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-//            return true;
-//        } catch (ExpiredJwtException expEx) {
-//            throw new InvalidTokenException("Token expired");
-//        } catch (UnsupportedJwtException unsEx) {
-//            throw new InvalidTokenException("Unsupported jwt");
-//        } catch (MalformedJwtException mjEx) {
-//            throw new InvalidTokenException("Malformed jwt");
-//        } catch (SignatureException sEx) {
-//            throw new InvalidTokenException("Invalid signature");
-//        } catch (Exception e) {
-//            throw new InvalidTokenException("Invalid token");
-//        }
-//    }
-
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException expEx) {
+            throw new InvalidTokenException("Token expired");
+        } catch (UnsupportedJwtException unsEx) {
+            throw new InvalidTokenException("Unsupported jwt");
+        } catch (MalformedJwtException mjEx) {
+            throw new InvalidTokenException("Malformed jwt");
+        } catch (SignatureException sEx) {
+            throw new InvalidTokenException("Invalid signature");
         } catch (Exception e) {
-            //TODO: create logs
-            //log.severe("invalid token");
+            throw new InvalidTokenException("Invalid token");
         }
-        return false;
     }
 
     public String getLoginFromToken(final String token) {

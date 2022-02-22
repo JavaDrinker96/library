@@ -1,8 +1,7 @@
 package com.gajava.library.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -10,7 +9,9 @@ import java.util.Set;
 
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 public class Book extends BaseEntity {
 
@@ -46,9 +47,10 @@ public class Book extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     private Set<Author> authors;
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(final Integer quantity) {
         this.quantity = quantity;
         this.availability = quantity > 0;
     }
+
 
 }

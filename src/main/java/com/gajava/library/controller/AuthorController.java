@@ -27,33 +27,33 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @PostMapping(value = "admin/create")
+    @PostMapping(value = "create")
     public ResponseEntity<AuthorDto> create(@RequestBody final AuthorCreateDto createDto) {
         final Author author = converter.convertAuthorCreateDtoToEntity(createDto);
         final AuthorDto authorDto = converter.convertEntityToAuthorDto(authorService.create(author));
         return ResponseEntity.status(HttpStatus.CREATED).body(authorDto);
     }
 
-    @GetMapping(value = "user/read/{id}")
+    @GetMapping(value = "read/{id}")
     public ResponseEntity<AuthorDto> read(@PathVariable final Long id) {
         final AuthorDto authorDto = converter.convertEntityToAuthorDto(authorService.read(id));
         return ResponseEntity.status(HttpStatus.OK).body(authorDto);
     }
 
-    @PutMapping(value = "admin/update")
+    @PutMapping(value = "update")
     public ResponseEntity<AuthorDto> update(@RequestBody final AuthorDto authorDto) {
         final Author author = converter.convertAuthorDtoToEntity(authorDto);
         final AuthorDto updatedAuthorDto = converter.convertEntityToAuthorDto(authorService.update(author));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAuthorDto);
     }
 
-    @DeleteMapping(value = "admin/delete/{id}")
+    @DeleteMapping(value = "delete/{id}")
     public ResponseEntity<?> delete(@PathVariable final Long id) {
         authorService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping(value = "user/read-all")
+    @GetMapping(value = "read-all")
     public ResponseEntity<List<AuthorDto>> readAll(@RequestBody final Pagination request) {
         final PageRequest pageRequest = PageRequest.of(
                 request.getPage(),

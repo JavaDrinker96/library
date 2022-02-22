@@ -1,9 +1,6 @@
 package com.gajava.library.service;
 
-import com.gajava.library.exception.LowReaderRatingException;
-import com.gajava.library.exception.NoEntityException;
-import com.gajava.library.exception.NoItemException;
-import com.gajava.library.exception.UpdateEntityException;
+import com.gajava.library.exception.*;
 import com.gajava.library.model.Book;
 import com.gajava.library.model.Reader;
 import com.gajava.library.model.RentalRecord;
@@ -22,7 +19,6 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
 
     final Integer LOWER_RATING_LIMIT = 30;
     final Integer RATING_PENALTY = 5;
-    final String COMMENT_BEFORE_REFUND = null;
 
     final BookRepository bookRepository;
     final RentalRecordRepository rentalRecordRepository;
@@ -30,6 +26,7 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
     public ReaderServiceImpl(final ReaderRepository repository,
                              final BookRepository bookRepository,
                              final RentalRecordRepository rentalRecordRepository) {
+
         super(repository, Reader.class);
         this.bookRepository = bookRepository;
         this.rentalRecordRepository = rentalRecordRepository;
@@ -37,72 +34,117 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
 
     @Override
     @Transactional
-    public void borrowBook(final Long id, final Long bookId, final Integer rentalDays) {
-        final Optional<Reader> optionalReader = repository.findById(id);
-        final Reader reader = optionalReader.orElseThrow(() -> new NoEntityException(id, entityClass.getTypeName()));
-        if (reader.getRating() < LOWER_RATING_LIMIT) {
-            throw new LowReaderRatingException(reader.getId());
-        }
+    public void borrowBook(final Long readerId, final Long bookId, final Integer rentalDays) {
+        final Reader reader = findReaderById(readerId);
+        checkReaderRating(reader);
 
-        final Optional<Book> optionalBook = bookRepository.findById(bookId);
-        final Book book = optionalBook.orElseThrow(() -> new NoEntityException(bookId, "Book"));
+        final Book book = findBookById(bookId);
+        checkBookAvailability(book);
+        book.setQuantity(book.getQuantity() - 1);
+        updateBook(book);
 
         reader.getBooks().add(book);
-        final Optional<Reader> optionalUpdatedReader = Optional.of(repository.save(reader));
-        final Reader updatedReader = optionalUpdatedReader.orElseThrow(() -> new UpdateEntityException(reader.getId(), entityClass.getTypeName()));
+        final Reader updatedReader = updateReader(reader);
 
-        final RentalRecord rentalRecord = new RentalRecord();
-        rentalRecord.setBook(book);
-        rentalRecord.setReader(updatedReader);
-        rentalRecord.setRentalStartDate(LocalDate.now());
-        rentalRecord.setRentalEndDate(LocalDate.now().plusDays(rentalDays));
-        rentalRecord.setComment(COMMENT_BEFORE_REFUND);
-
-        Optional.of(rentalRecordRepository.save(rentalRecord))
-                .orElseThrow(() -> new UpdateEntityException(rentalRecord.getId(), "RentalRecord"));
+        final RentalRecord record = prepareRecord(book, updatedReader, rentalDays);
+        saveRecord(record);
     }
 
     @Override
     @Transactional
-    public void refundBook(final Long id, final Long bookId, final String refundComment) {
-        final Optional<Reader> optionalReader = repository.findById(id);
-        final Reader reader = optionalReader.orElseThrow(() -> new NoEntityException(id, entityClass.getTypeName()));
+    public void refundBook(final Long readerId, final Long bookId, final String refundComment) {
+        final Reader reader = findReaderById(readerId);
+        final Book book = findBookById(bookId);
 
-        final Optional<Book> optionalBook = bookRepository.findById(bookId);
-        final Book book = optionalBook.orElseThrow(() -> new NoEntityException(bookId, "Book"));
+        final Book userRemovedBook = findRemovedBookOfReader(bookId, reader);
+        reader.getBooks().remove(userRemovedBook);
 
-        final List<RentalRecord> rentalRecordsList = rentalRecordRepository.findRecordNotRefundByIds(id, bookId);
-        if (rentalRecordsList.isEmpty()) {
-            throw new NoEntityException("RentalRecord");
-        }
-
-        final Optional<Book> optionalUserRemoveBook = reader.getBooks().stream().filter(x -> x.getId().equals(bookId)).findFirst();
-        final Book userRemoveBook = optionalUserRemoveBook.orElseThrow(() -> new NoItemException(entityClass.getTypeName(), "Book", bookId));
-
-        reader.getBooks().remove(userRemoveBook);
-        final RentalRecord rentalRecord = rentalRecordsList.get(0);
+        final RentalRecord rentalRecord = findOldestNotRefundRecord(readerId, bookId);
         rentalRecord.setActualReturnDate(LocalDate.now());
-        if (rentalRecord.getActualReturnDate().isAfter(rentalRecord.getRentalEndDate())) {
+
+        tryChangeReaderRating(reader, rentalRecord);
+        book.setQuantity(book.getQuantity() + 1);
+
+        updateReader(reader);
+        updateBook(book);
+
+        rentalRecord.setComment(refundComment);
+        updateRecord(rentalRecord);
+    }
+
+    private Reader findReaderById(final Long id) {
+        return repository.findById(id).orElseThrow(() -> new NoEntityException(id, entityClass.getTypeName()));
+    }
+
+    private void checkReaderRating(final Reader reader) {
+        if (reader.getRating() < LOWER_RATING_LIMIT) {
+            throw new LowReaderRatingException(reader.getId());
+        }
+    }
+
+    private void checkBookAvailability(final Book book) {
+        if (book.getAvailability().equals(false)) {
+            throw new BookNotAvailableException(book.getId());
+        }
+    }
+
+    private Book findBookById(final Long id) {
+        return bookRepository.findById(id).orElseThrow(() -> new NoEntityException(id, "Book"));
+    }
+
+    private Book updateBook(final Book book) {
+        return Optional.ofNullable(bookRepository.save(book))
+                .orElseThrow(() -> new UpdateEntityException(book.getId(), Book.class.getTypeName()));
+    }
+
+    private Reader updateReader(final Reader reader) {
+        return Optional.ofNullable(repository.save(reader))
+                .orElseThrow(() -> new UpdateEntityException(reader.getId(), entityClass.getTypeName()));
+    }
+
+    private RentalRecord prepareRecord(final Book book, final Reader reader, final Integer rentalDays) {
+
+        return RentalRecord.builder()
+                .book(book)
+                .reader(reader)
+                .rentalStartDate(LocalDate.now())
+                .rentalEndDate(LocalDate.now().plusDays(rentalDays))
+                .build();
+    }
+
+    private RentalRecord saveRecord(final RentalRecord record) {
+        return Optional.ofNullable(rentalRecordRepository.save(record))
+                .orElseThrow(() -> new SaveEntityException(RentalRecord.class.getTypeName()));
+    }
+
+    private RentalRecord findOldestNotRefundRecord(final Long readerId, final Long bookId) {
+        final List<RentalRecord> rentalRecordsList = rentalRecordRepository.findRecordsNotRefundByIds(readerId, bookId);
+        if (rentalRecordsList.isEmpty()) {
+            throw new NoEntityException(RentalRecord.class.getTypeName());
+        }
+        return rentalRecordsList.get(0);
+    }
+
+    private Book findRemovedBookOfReader(final Long bookId, final Reader reader) {
+        return reader.getBooks().stream()
+                .filter(x -> x.getId().equals(bookId)).findFirst()
+                .orElseThrow(() -> new NoItemException(
+                        entityClass.getTypeName(),
+                        Book.class.getTypeName(),
+                        bookId)
+                );
+    }
+
+    private void tryChangeReaderRating(final Reader reader, final RentalRecord record) {
+        if (record.getActualReturnDate().isAfter(record.getRentalEndDate())) {
             final Integer readerRating = reader.getRating();
             reader.setRating(readerRating - RATING_PENALTY);
         }
-        final Optional<Reader> optionalUpdatedReader = Optional.of(repository.save(reader));
-        if (optionalUpdatedReader.isEmpty()) {
-            throw new UpdateEntityException(reader.getId(), entityClass.getTypeName());
-        }
+    }
 
-        final Integer bookQuantity = book.getQuantity();
-        book.setQuantity(bookQuantity + 1);
-        final Optional<Book> optionalUpdatedBook = Optional.of(bookRepository.save(book));
-        if (optionalUpdatedBook.isEmpty()) {
-            throw new UpdateEntityException(book.getId(), "Book");
-        }
-
-        rentalRecord.setComment(refundComment);
-        final Optional<RentalRecord> optionalRentalRecord = Optional.of(rentalRecordRepository.save(rentalRecord));
-        if (optionalRentalRecord.isEmpty()) {
-            throw new UpdateEntityException(rentalRecord.getId(), "RentalRecord");
-        }
+    private RentalRecord updateRecord(final RentalRecord record) {
+        return Optional.ofNullable(rentalRecordRepository.save(record))
+                .orElseThrow(() -> new UpdateEntityException(record.getId(), RentalRecord.class.getTypeName()));
     }
 
 }

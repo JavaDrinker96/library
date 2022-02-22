@@ -42,6 +42,6 @@ public interface RentalRecordRepository extends BaseRepository<RentalRecord> {
 
     @Query("SELECT rr FROM RentalRecord rr WHERE rr.reader.id = :readerId AND rr.book.id = :bookId " +
             "AND rr.actualReturnDate IS NULL ORDER BY rr.rentalEndDate ASC")
-    List<RentalRecord> findRecordNotRefundByIds(@Param("readerId") Long readerId, @Param("bookId") Long bookId);
+    List<RentalRecord> findRecordsNotRefundByIds(@Param("readerId") Long readerId, @Param("bookId") Long bookId);
 
 }

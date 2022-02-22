@@ -1,4 +1,4 @@
-package com.gajava.library.configuration;
+package com.gajava.library.config;
 
 import com.gajava.library.model.User;
 import org.springframework.security.core.GrantedAuthority;

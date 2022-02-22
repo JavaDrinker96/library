@@ -1,11 +1,11 @@
-package com.gajava.library.configuration;
+package com.gajava.library.config;
 
 import com.gajava.library.controller.dto.author.AuthorCreateDto;
 import com.gajava.library.controller.dto.author.AuthorDto;
 import com.gajava.library.controller.dto.book.BookDto;
 import com.gajava.library.controller.dto.reader.ReaderCreateDto;
 import com.gajava.library.controller.dto.reader.ReaderDto;
-import com.gajava.library.exception.BadDtoException;
+import com.gajava.library.exception.BadRequestException;
 import com.gajava.library.model.Author;
 import com.gajava.library.model.Book;
 import com.gajava.library.model.Reader;
@@ -43,7 +43,7 @@ public class MapperConfiguration implements WebMvcConfigurer {
 
                 final String[] fullName = splitFullName(dto.getFullName());
                 if (fullName.length < 2 || fullName.length > 3) {
-                    throw new BadDtoException();
+                    throw new BadRequestException();
                 }
 
                 author.setId(dto.getId());
@@ -74,7 +74,7 @@ public class MapperConfiguration implements WebMvcConfigurer {
 
                 final String[] fullName = splitFullName(dto.getFullName());
                 if (fullName.length < 2 || fullName.length > 3) {
-                    throw new BadDtoException();
+                    throw new BadRequestException();
                 }
 
                 author.setName(fullName[0]);
@@ -93,7 +93,7 @@ public class MapperConfiguration implements WebMvcConfigurer {
 
                 final String[] fullName = splitFullName(dto.getFullName());
                 if (fullName.length < 2 || fullName.length > 3) {
-                    throw new BadDtoException();
+                    throw new BadRequestException();
                 }
 
                 final List<Book> bookList = dto.getBooks().stream()
@@ -144,7 +144,7 @@ public class MapperConfiguration implements WebMvcConfigurer {
 
                 final String[] fullName = splitFullName(dto.getFullName());
                 if (fullName.length < 2 || fullName.length > 3) {
-                    throw new BadDtoException();
+                    throw new BadRequestException();
                 }
 
                 final List<Book> bookList = dto.getBooks().stream()

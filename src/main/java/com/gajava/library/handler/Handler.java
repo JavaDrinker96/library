@@ -97,8 +97,8 @@ public class Handler {
         return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
     }
 
-    @ExceptionHandler(BadDtoException.class)
-    public ResponseEntity<ErrorResponse> handleBadDtoException(final BadDtoException e) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadDtoException(final BadRequestException e) {
         final ErrorResponse response = ErrorResponse.builder()
                 .error("BadDtoException")
                 .message(e.getMessage())
@@ -119,6 +119,30 @@ public class Handler {
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+    }
+
+    @ExceptionHandler(AuthenticationLoginException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationLoginException(final AuthenticationLoginException e) {
+        final ErrorResponse response = ErrorResponse.builder()
+                .error("AuthenticationLoginException")
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST)
+                .timestamp(now())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthenticationPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationPasswordException(final AuthenticationPasswordException e) {
+        final ErrorResponse response = ErrorResponse.builder()
+                .error("AuthenticationPasswordException")
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST)
+                .timestamp(now())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }

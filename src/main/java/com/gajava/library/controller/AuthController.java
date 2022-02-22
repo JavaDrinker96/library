@@ -1,6 +1,6 @@
 package com.gajava.library.controller;
 
-import com.gajava.library.configuration.jwt.JwtProvider;
+import com.gajava.library.config.jwt.JwtProvider;
 import com.gajava.library.controller.request.security.AuthRequest;
 import com.gajava.library.controller.request.security.RegistrationRequest;
 import com.gajava.library.controller.response.AuthResponse;

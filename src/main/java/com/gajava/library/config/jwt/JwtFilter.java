@@ -1,7 +1,7 @@
-package com.gajava.library.configuration.jwt;
+package com.gajava.library.config.jwt;
 
-import com.gajava.library.configuration.CustomUserDetails;
-import com.gajava.library.configuration.CustomUserDetailsService;
+import com.gajava.library.config.CustomUserDetails;
+import com.gajava.library.config.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

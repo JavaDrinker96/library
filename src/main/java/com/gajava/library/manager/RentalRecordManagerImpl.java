@@ -1,14 +1,16 @@
 package com.gajava.library.manager;
 
 import com.gajava.library.controller.request.record.RecordFilter;
-import com.gajava.library.controller.request.record.RecordIdFilter;
-import com.gajava.library.exception.BadDtoException;
+import com.gajava.library.controller.request.record.RecordRequest;
+import com.gajava.library.exception.BadRequestException;
 import com.gajava.library.exception.NoEntityException;
 import com.gajava.library.model.Book;
+import com.gajava.library.model.Reader;
 import com.gajava.library.model.RentalRecord;
 import com.gajava.library.service.RentalRecordService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,11 +25,19 @@ public class RentalRecordManagerImpl implements RentalRecordManager {
     private final RentalRecordService service;
 
     @Override
-    public List<RentalRecord> findByFilters(final RecordFilter filter,
-                                            final String contains,
-                                            final LocalDate date,
-                                            final Boolean refund,
-                                            final Pageable pageable) {
+    public List<RentalRecord> findByFilters(final RecordRequest request) {
+        final RecordFilter filter = request.getFilter();
+        final String contains = request.getContains();
+        final LocalDate date = request.getDate();
+        final Boolean refund = request.getRefund();
+        final PageRequest pageable = PageRequest.of(
+                request.getPagination().getPage(),
+                request.getPagination().getSize(),
+                Sort.by(
+                        request.getPagination().getSorting().getDirection(),
+                        request.getPagination().getSorting().getProperty()
+                )
+        );
 
         final List<RentalRecord> recordList = switch (filter) {
             case READER -> {
@@ -35,24 +45,20 @@ public class RentalRecordManagerImpl implements RentalRecordManager {
                         .filter(x -> Pattern.matches("\\w+", x))
                         .toArray(String[]::new);
 
-                final String EMPTY_STRING = "";
-                String name = EMPTY_STRING;
-                String surname = EMPTY_STRING;
-                String patronymic = EMPTY_STRING;
-
                 if (fullName.length == 0 || fullName.length > 3) {
-                    throw new BadDtoException();
+                    throw new BadRequestException();
                 }
 
-                name = fullName[0];
+                final Reader reader = new Reader();
+                reader.setName(fullName[0]);
                 if (fullName.length > 1) {
-                    surname = fullName[1];
+                    reader.setSurname(fullName[1]);
                 }
                 if (fullName.length > 2) {
-                    patronymic = fullName[2];
+                    reader.setPatronymic(fullName[2]);
                 }
 
-                yield service.findByReader(name, surname, patronymic, pageable);
+                yield service.findByReader(reader, pageable);
             }
             case BOOK -> service.findByBook(contains.trim(), pageable);
             case BORROW_AFTER -> service.findByTakeAfter(date, pageable);
@@ -66,14 +72,6 @@ public class RentalRecordManagerImpl implements RentalRecordManager {
         }
 
         return recordList;
-    }
-
-    @Override
-    public RentalRecord findById(final Long id, final RecordIdFilter filter) {
-        return switch (filter) {
-            case BOOK -> service.findByBookId(id);
-            case READER -> service.findByReaderId(id);
-        };
     }
 
 }

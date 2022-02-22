@@ -3,14 +3,11 @@ package com.gajava.library.controller;
 import com.gajava.library.controller.dto.book.BookCreateDto;
 import com.gajava.library.controller.dto.book.BookDto;
 import com.gajava.library.controller.request.book.BookRequest;
-import com.gajava.library.converter.AuthorConverter;
 import com.gajava.library.converter.BookConverter;
 import com.gajava.library.manager.BookManagerImpl;
 import com.gajava.library.model.Book;
 import com.gajava.library.service.BookService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,57 +21,41 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookConverter bookConverter;
-    private final AuthorConverter authorConverter;
     private final BookService bookService;
     private final BookManagerImpl manager;
 
-    @PostMapping(value = "admin/create")
+    @PostMapping(value = "create")
     public ResponseEntity<BookDto> create(@RequestBody final BookCreateDto createDto) {
         final Book book = bookConverter.convertBookCreateDtoToEntity(createDto);
         final BookDto bookDto = bookConverter.convertEntityToBookDto(bookService.create(book));
         return ResponseEntity.status(HttpStatus.CREATED).body(bookDto);
     }
 
-    @GetMapping(value = "user/read/{id}")
+    @GetMapping(value = "read/{id}")
     public ResponseEntity<BookDto> read(@PathVariable final Long id) {
         final BookDto bookDto = bookConverter.convertEntityToBookDto(bookService.read(id));
         return ResponseEntity.status(HttpStatus.OK).body(bookDto);
     }
 
-    @PutMapping(value = "admin/update")
+    @PutMapping(value = "update")
     public ResponseEntity<BookDto> update(@RequestBody final BookDto bookDto) {
         final Book book = bookConverter.convertBookDtoToEntity(bookDto);
         final BookDto updatedBookDto = bookConverter.convertEntityToBookDto(bookService.update(book));
         return ResponseEntity.status(HttpStatus.OK).body(updatedBookDto);
     }
 
-    @DeleteMapping(value = "admin/delete/{id}")
+    @DeleteMapping(value = "delete/{id}")
     public ResponseEntity<?> delete(@PathVariable final Long id) {
         bookService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping(value = "user/read-all")
+    @GetMapping(value = "read-all")
     public ResponseEntity<List<BookDto>> readAll(@RequestBody final BookRequest request) {
-        final PageRequest pageRequest = PageRequest.of(
-                request.getPagination().getPage(),
-                request.getPagination().getSize(),
-                Sort.by(
-                        request.getPagination().getSorting().getDirection(),
-                        request.getPagination().getSorting().getProperty()
-                )
-        );
-
-        final List<Book> bookList = manager.findByFilters(
-                request.getFilter(),
-                request.getContains(),
-                pageRequest
-        );
-
+        final List<Book> bookList = manager.findByFilters(request);
         final List<BookDto> bookDtoList = bookList.stream()
                 .map(bookConverter::convertEntityToBookDto)
                 .collect(Collectors.toList());
-
         return ResponseEntity.status(HttpStatus.OK).body(bookDtoList);
     }
 

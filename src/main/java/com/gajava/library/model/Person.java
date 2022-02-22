@@ -1,22 +1,25 @@
 package com.gajava.library.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 @Getter
 @Setter
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @MappedSuperclass
 public abstract class Person extends BaseEntity {
 
     @Column(nullable = false)
-    private String name;
+    protected String name;
 
     @Column(nullable = false)
-    private String surname;
+    protected String surname;
 
-    private String patronymic;
+    protected String patronymic;
 
 }
