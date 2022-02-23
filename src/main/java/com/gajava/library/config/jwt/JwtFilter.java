@@ -2,7 +2,6 @@ package com.gajava.library.config.jwt;
 
 import com.gajava.library.config.CustomUserDetails;
 import com.gajava.library.config.CustomUserDetailsService;
-import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,6 @@ import java.io.IOException;
 
 import static org.springframework.util.StringUtils.hasText;
 
-@AllArgsConstructor
 @Component
 public class JwtFilter extends GenericFilterBean {
 
@@ -25,6 +23,11 @@ public class JwtFilter extends GenericFilterBean {
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailsService customUserDetailsService;
+
+    public JwtFilter(final JwtProvider jwtProvider, final CustomUserDetailsService customUserDetailsService) {
+        this.jwtProvider = jwtProvider;
+        this.customUserDetailsService = customUserDetailsService;
+    }
 
     //TODO: handle this exceptions
     @Override

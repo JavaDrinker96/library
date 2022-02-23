@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,20 +26,20 @@ public class BookController {
     private final BookManagerImpl manager;
 
     @PostMapping(value = "create")
-    public ResponseEntity<BookDto> create(@RequestBody final BookCreateDto createDto) {
+    public ResponseEntity<BookDto> create(@Valid @RequestBody final BookCreateDto createDto) {
         final Book book = bookConverter.convertBookCreateDtoToEntity(createDto);
         final BookDto bookDto = bookConverter.convertEntityToBookDto(bookService.create(book));
         return ResponseEntity.status(HttpStatus.CREATED).body(bookDto);
     }
 
     @GetMapping(value = "read/{id}")
-    public ResponseEntity<BookDto> read(@PathVariable final Long id) {
+    public ResponseEntity<BookDto> read(@Valid @PathVariable final Long id) {
         final BookDto bookDto = bookConverter.convertEntityToBookDto(bookService.read(id));
         return ResponseEntity.status(HttpStatus.OK).body(bookDto);
     }
 
     @PutMapping(value = "update")
-    public ResponseEntity<BookDto> update(@RequestBody final BookDto bookDto) {
+    public ResponseEntity<BookDto> update(@Valid @RequestBody final BookDto bookDto) {
         final Book book = bookConverter.convertBookDtoToEntity(bookDto);
         final BookDto updatedBookDto = bookConverter.convertEntityToBookDto(bookService.update(book));
         return ResponseEntity.status(HttpStatus.OK).body(updatedBookDto);
@@ -51,7 +52,7 @@ public class BookController {
     }
 
     @GetMapping(value = "read-all")
-    public ResponseEntity<List<BookDto>> readAll(@RequestBody final BookRequest request) {
+    public ResponseEntity<List<BookDto>> readAll(@Valid @RequestBody final BookRequest request) {
         final List<Book> bookList = manager.findByFilters(request);
         final List<BookDto> bookDtoList = bookList.stream()
                 .map(bookConverter::convertEntityToBookDto)

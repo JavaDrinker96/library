@@ -37,7 +37,6 @@ public class BookServiceTest {
     @InjectMocks
     private BookServiceImpl bookService;
 
-
     private List<Book> expectedList;
     private Page<Book> page;
     private Book bookWithoutId;
@@ -196,7 +195,7 @@ public class BookServiceTest {
     }
 
     @Test
-    public void findByAuthor__returnBookList() {
+    public void findByAuthor_returnBookList() {
         when(bookRepository.findByAuthor(authorName, authorSurname, authorPatronymic, pageable))
                 .thenReturn(page);
         final List<Book> actualList = bookService.findByAuthor(authorWithoutId, pageable);

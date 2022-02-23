@@ -2,19 +2,17 @@ package com.gajava.library.controller;
 
 import com.gajava.library.controller.dto.record.RentalRecordCreateDto;
 import com.gajava.library.controller.dto.record.RentalRecordDto;
-import com.gajava.library.controller.request.record.RecordIdRequest;
 import com.gajava.library.controller.request.record.RecordRequest;
 import com.gajava.library.converter.RentalRecordConverter;
 import com.gajava.library.manager.RentalRecordManager;
 import com.gajava.library.model.RentalRecord;
 import com.gajava.library.service.RentalRecordService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,20 +26,20 @@ public class RentalRecordController {
     private final RentalRecordManager manager;
 
     @PostMapping(value = "create")
-    public ResponseEntity<RentalRecordDto> create(@RequestBody final RentalRecordCreateDto createDto) {
+    public ResponseEntity<RentalRecordDto> create(@Valid @RequestBody final RentalRecordCreateDto createDto) {
         final RentalRecord record = converter.convertRentalRecordCreateDtoToEntity(createDto);
         final RentalRecordDto recordDto = converter.convertEntityToRentalRecordDto(rentalRecordService.create(record));
         return ResponseEntity.status(HttpStatus.CREATED).body(recordDto);
     }
 
     @GetMapping(value = "read/{id}")
-    public ResponseEntity<RentalRecordDto> read(@PathVariable final Long id) {
+    public ResponseEntity<RentalRecordDto> read(@Valid @PathVariable final Long id) {
         final RentalRecordDto recordDto = converter.convertEntityToRentalRecordDto(rentalRecordService.read(id));
         return ResponseEntity.status(HttpStatus.OK).body(recordDto);
     }
 
     @PutMapping(value = "update")
-    public ResponseEntity<RentalRecordDto> update(@RequestBody final RentalRecordDto recordDto) {
+    public ResponseEntity<RentalRecordDto> update(@Valid @RequestBody final RentalRecordDto recordDto) {
         final RentalRecord record = converter.convertRentalRecordDtoToEntity(recordDto);
         final RentalRecordDto updatedRecordDto = converter.convertEntityToRentalRecordDto(rentalRecordService.update(record));
         return ResponseEntity.status(HttpStatus.OK).body(updatedRecordDto);
@@ -54,21 +52,22 @@ public class RentalRecordController {
     }
 
     @GetMapping(value = "find-by-book-id")
-    public ResponseEntity<RentalRecordDto> findByBookId(@RequestBody final Long id) {
-        final RentalRecord record = rentalRecordService.findByBookId(id);;
+    public ResponseEntity<RentalRecordDto> findByBookId(@Valid @RequestBody final Long id) {
+        final RentalRecord record = rentalRecordService.findByBookId(id);
+        ;
         final RentalRecordDto recordDto = converter.convertEntityToRentalRecordDto(record);
         return ResponseEntity.status(HttpStatus.OK).body(recordDto);
     }
 
     @GetMapping(value = "find-by-reader-id")
-    public ResponseEntity<RentalRecordDto> findByReaderId(@RequestBody final Long id) {
+    public ResponseEntity<RentalRecordDto> findByReaderId(@Valid @RequestBody final Long id) {
         final RentalRecord record = rentalRecordService.findByReaderId(id);
         final RentalRecordDto recordDto = converter.convertEntityToRentalRecordDto(record);
         return ResponseEntity.status(HttpStatus.OK).body(recordDto);
     }
 
     @GetMapping(value = "read-all")
-    public ResponseEntity<List<RentalRecordDto>> readAll(@RequestBody final RecordRequest request) {
+    public ResponseEntity<List<RentalRecordDto>> readAll(@Valid @RequestBody final RecordRequest request) {
         final List<RentalRecord> recordList = manager.findByFilters(request);
         final List<RentalRecordDto> recordDtoList = recordList.stream()
                 .map(converter::convertEntityToRentalRecordDto)

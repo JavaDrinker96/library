@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @AllArgsConstructor
@@ -40,6 +41,10 @@ public class BookManagerImpl implements BookManager {
             case TITLE -> bookService.findByTitle(contains, pageable);
             case GENRE -> bookService.findByGenre(contains, pageable);
             case AUTHOR -> {
+                if (Objects.isNull(contains)) {
+                    throw new BadRequestException();
+                }
+
                 final String[] fullName = Arrays.stream(contains.split("\\W"))
                         .filter(x -> Pattern.matches("\\w+", x))
                         .toArray(String[]::new);

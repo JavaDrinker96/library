@@ -86,7 +86,7 @@ public class MapperConfiguration implements WebMvcConfigurer {
             }
         };
 
-        Converter<ReaderDto, Reader> readerDtoToReaderConverter = new Converter<ReaderDto, Reader>()  {
+        Converter<ReaderDto, Reader> readerDtoToReaderConverter = new Converter<ReaderDto, Reader>() {
             public Reader convert(final MappingContext<ReaderDto, Reader> context) {
                 final ReaderDto dto = context.getSource();
                 final Reader reader = new Reader();
@@ -116,7 +116,7 @@ public class MapperConfiguration implements WebMvcConfigurer {
             }
         };
 
-        Converter<Reader, ReaderDto> readerToReaderDtoConverter = new Converter<Reader, ReaderDto>()  {
+        Converter<Reader, ReaderDto> readerToReaderDtoConverter = new Converter<Reader, ReaderDto>() {
             public ReaderDto convert(final MappingContext<Reader, ReaderDto> context) {
                 final Reader reader = context.getSource();
                 final ReaderDto dto = new ReaderDto();
@@ -137,7 +137,7 @@ public class MapperConfiguration implements WebMvcConfigurer {
             }
         };
 
-        Converter<ReaderCreateDto, Reader> readerCreateDtoToReaderConverter = new Converter<ReaderCreateDto, Reader>()  {
+        Converter<ReaderCreateDto, Reader> readerCreateDtoToReaderConverter = new Converter<ReaderCreateDto, Reader>() {
             public Reader convert(final MappingContext<ReaderCreateDto, Reader> context) {
                 final ReaderCreateDto dto = context.getSource();
                 final Reader reader = new Reader();

@@ -19,7 +19,7 @@ import java.util.List;
 public class Reader extends Person {
 
     @Column(nullable = false, unique = true, length = 6)
-    private Integer libraryCardNumber;
+    private String libraryCardNumber;
 
     @Column(unique = true)
     private String email;
@@ -35,7 +35,7 @@ public class Reader extends Person {
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book> books;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
 }

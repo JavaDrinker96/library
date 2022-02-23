@@ -19,7 +19,6 @@ public class AuthorConverter {
         return modelMapper.map(dto, Author.class);
     }
 
-
     public AuthorDto convertEntityToAuthorDto(final Author entity) {
         return modelMapper.map(entity, AuthorDto.class);
     }

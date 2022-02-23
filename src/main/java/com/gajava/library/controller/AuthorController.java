@@ -10,8 +10,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +31,7 @@ public class AuthorController {
     }
 
     @PostMapping(value = "create")
-    public ResponseEntity<AuthorDto> create(@RequestBody final AuthorCreateDto createDto) {
+    public ResponseEntity<AuthorDto> create(@Valid @RequestBody final AuthorCreateDto createDto) {
         final Author author = converter.convertAuthorCreateDtoToEntity(createDto);
         final AuthorDto authorDto = converter.convertEntityToAuthorDto(authorService.create(author));
         return ResponseEntity.status(HttpStatus.CREATED).body(authorDto);
@@ -41,11 +44,12 @@ public class AuthorController {
     }
 
     @PutMapping(value = "update")
-    public ResponseEntity<AuthorDto> update(@RequestBody final AuthorDto authorDto) {
+    public ResponseEntity<AuthorDto> update(@Valid @RequestBody final AuthorDto authorDto) {
         final Author author = converter.convertAuthorDtoToEntity(authorDto);
         final AuthorDto updatedAuthorDto = converter.convertEntityToAuthorDto(authorService.update(author));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAuthorDto);
     }
+
 
     @DeleteMapping(value = "delete/{id}")
     public ResponseEntity<?> delete(@PathVariable final Long id) {
@@ -54,7 +58,7 @@ public class AuthorController {
     }
 
     @GetMapping(value = "read-all")
-    public ResponseEntity<List<AuthorDto>> readAll(@RequestBody final Pagination request) {
+    public ResponseEntity<List<AuthorDto>> readAll(@Valid @RequestBody final Pagination request) {
         final PageRequest pageRequest = PageRequest.of(
                 request.getPage(),
                 request.getSize(),

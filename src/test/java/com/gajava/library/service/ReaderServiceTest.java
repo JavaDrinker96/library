@@ -77,7 +77,7 @@ public class ReaderServiceTest {
                 .name("name")
                 .surname("surname")
                 .patronymic("patronymic")
-                .libraryCardNumber(123456)
+                .libraryCardNumber("123456")
                 .email("mail@mail.ru")
                 .birthDate(LocalDate.now())
                 .rating(RATING)
@@ -92,6 +92,7 @@ public class ReaderServiceTest {
         readerService.borrowBook(readerId, bookId, rentalDays);
     }
 
+    //TODO: when
     @Test(expected = LowReaderRatingException.class)
     public void borrowBook_readerWithLowRating_throwException() {
         reader.setRating(LOWER_RATING_LIMIT - 1);
@@ -99,6 +100,7 @@ public class ReaderServiceTest {
         readerService.borrowBook(readerId, bookId, rentalDays);
     }
 
+    //TODO: when
     @Test(expected = NoEntityException.class)
     public void borrowBook_foundNullBook_throwException() {
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());

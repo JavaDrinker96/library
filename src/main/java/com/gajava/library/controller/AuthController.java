@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
+
 @RestController
 public class AuthController {
 
@@ -24,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody final RegistrationRequest registrationRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody final RegistrationRequest registrationRequest) {
         final User user = new User();
         user.setPassword(registrationRequest.getPassword());
         user.setLogin(registrationRequest.getLogin());
@@ -33,7 +36,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<AuthResponse> auth(@RequestBody final AuthRequest request) {
+    public ResponseEntity<AuthResponse> auth(@Valid @RequestBody final AuthRequest request) {
         final User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
         final String token = jwtProvider.generateToken(user.getLogin());
         return ResponseEntity.status(HttpStatus.OK).body(new AuthResponse(token));

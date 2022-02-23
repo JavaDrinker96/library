@@ -8,12 +8,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+
 import static java.time.LocalDateTime.now;
 
 @ControllerAdvice
 public class Handler {
 
-    @ExceptionHandler(value = {NoEntityException.class})
+    @ExceptionHandler(NoEntityException.class)
     protected ResponseEntity<Object> handleNoEntityException(final NoEntityException e) {
         final ErrorResponse response = ErrorResponse.builder()
                 .error("NoEntityException")
@@ -66,13 +68,14 @@ public class Handler {
         final ErrorResponse response = ErrorResponse.builder()
                 .error("LowReaderRatingException")
                 .message(e.getMessage())
-                .status(HttpStatus.BAD_GATEWAY)
+                .status(HttpStatus.BAD_REQUEST)
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    //Todo: delete it
     @ExceptionHandler(SaveEntityException.class)
     public ResponseEntity<ErrorResponse> handleSaveEntityException(final SaveEntityException e) {
         final ErrorResponse response = ErrorResponse.builder()
@@ -85,6 +88,7 @@ public class Handler {
         return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
     }
 
+    //Todo: change it on null id exception
     @ExceptionHandler(UpdateEntityException.class)
     public ResponseEntity<ErrorResponse> handleUpdateEntityException(final UpdateEntityException e) {
         final ErrorResponse response = ErrorResponse.builder()
@@ -114,11 +118,11 @@ public class Handler {
         final ErrorResponse response = ErrorResponse.builder()
                 .error("UsernameNotFoundException")
                 .message(e.getMessage())
-                .status(HttpStatus.BAD_GATEWAY)
+                .status(HttpStatus.NOT_FOUND)
                 .timestamp(now())
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AuthenticationLoginException.class)
@@ -143,6 +147,30 @@ public class Handler {
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BookNotAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleBookNotAvailableException(final BookNotAvailableException e) {
+        final ErrorResponse response = ErrorResponse.builder()
+                .error("BookNotAvailableException")
+                .message(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST)
+                .timestamp(now())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidTokenException(final InvalidTokenException e) {
+        final ErrorResponse response = ErrorResponse.builder()
+                .error("InvalidTokenException")
+                .message(e.getMessage())
+                .status(HttpStatus.UNAUTHORIZED)
+                .timestamp(now())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
 }

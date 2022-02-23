@@ -1,6 +1,9 @@
 package com.gajava.library.model;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -8,39 +11,30 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
-@Setter
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class Book extends BaseEntity {
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private String title;
 
-    @Getter
     @Setter
     private String genre;
 
-    @Getter
     @Setter
     private LocalDate year;
 
-    @Getter
     @Setter
     private String description;
 
-    @Getter
     @Column(nullable = false)
     private Integer quantity;
 
-    @Getter
     @Column(nullable = false)
     private Boolean availability;
 
-    @Getter
     @Setter
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = @JoinColumn(name = "book_id"),
@@ -51,6 +45,5 @@ public class Book extends BaseEntity {
         this.quantity = quantity;
         this.availability = quantity > 0;
     }
-
 
 }

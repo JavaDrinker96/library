@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -35,6 +36,9 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
     @Override
     @Transactional
     public void borrowBook(final Long readerId, final Long bookId, final Integer rentalDays) {
+        if (Objects.isNull(readerId) || Objects.isNull(bookId) || Objects.isNull(rentalDays)) {
+            throw new NullParameterException();
+        }
         final Reader reader = findReaderById(readerId);
         checkReaderRating(reader);
 
@@ -53,6 +57,9 @@ public class ReaderServiceImpl extends AbstractService<Reader, ReaderRepository>
     @Override
     @Transactional
     public void refundBook(final Long readerId, final Long bookId, final String refundComment) {
+        if (Objects.isNull(readerId) || Objects.isNull(bookId)) {
+            throw new NullParameterException();
+        }
         final Reader reader = findReaderById(readerId);
         final Book book = findBookById(bookId);
 

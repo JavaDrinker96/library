@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,20 +28,20 @@ public class ReaderController {
     private final ReaderService readerService;
 
     @PostMapping(value = "create")
-    public ResponseEntity<ReaderDto> create(@RequestBody final ReaderCreateDto createDto) {
+    public ResponseEntity<ReaderDto> create(@Valid @RequestBody final ReaderCreateDto createDto) {
         final Reader reader = converter.convertReaderCreateDtoToEntity(createDto);
         final ReaderDto readerDto = converter.convertEntityToReaderDto(readerService.create(reader));
         return ResponseEntity.status(HttpStatus.CREATED).body(readerDto);
     }
 
     @GetMapping(value = "read/{id}")
-    public ResponseEntity<ReaderDto> read(@PathVariable final Long id) {
+    public ResponseEntity<ReaderDto> read(@Valid @PathVariable final Long id) {
         final ReaderDto readerDto = converter.convertEntityToReaderDto(readerService.read(id));
         return ResponseEntity.status(HttpStatus.OK).body(readerDto);
     }
 
     @PutMapping(value = "update")
-    public ResponseEntity<ReaderDto> update(@RequestBody final ReaderDto readerDto) {
+    public ResponseEntity<ReaderDto> update(@Valid @RequestBody final ReaderDto readerDto) {
         final Reader reader = converter.convertReaderDtoToEntity(readerDto);
         final ReaderDto updatedReaderDto = converter.convertEntityToReaderDto(readerService.update(reader));
         return ResponseEntity.status(HttpStatus.OK).body(updatedReaderDto);
@@ -53,7 +54,7 @@ public class ReaderController {
     }
 
     @GetMapping(value = "read-all")
-    public ResponseEntity<List<ReaderDto>> readAll(@RequestBody final Pagination request) {
+    public ResponseEntity<List<ReaderDto>> readAll(@Valid @RequestBody final Pagination request) {
         final PageRequest pageRequest = PageRequest.of(
                 request.getPage(),
                 request.getSize(),
@@ -74,7 +75,7 @@ public class ReaderController {
     }
 
     @PutMapping(value = "borrow")
-    public ResponseEntity<?> borrowBook(@RequestBody final ReaderBorrowRequest request) {
+    public ResponseEntity<?> borrowBook(@Valid @RequestBody final ReaderBorrowRequest request) {
         final Long readerId = request.getReaderId();
         final Long bookId = request.getBookId();
         final Integer rentalDays = request.getRentalDays();
@@ -84,7 +85,7 @@ public class ReaderController {
     }
 
     @PutMapping(value = "refund")
-    public ResponseEntity<?> refundBook(@RequestBody final ReaderRefundRequest request) {
+    public ResponseEntity<?> refundBook(@Valid @RequestBody final ReaderRefundRequest request) {
         final Long readerId = request.getReaderId();
         final Long bookId = request.getBookId();
         final String refundComment = request.getRefundComment();

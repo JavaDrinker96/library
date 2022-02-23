@@ -1,6 +1,7 @@
 package com.gajava.library.service;
 
 import com.gajava.library.exception.NoEntityException;
+import com.gajava.library.exception.NullParameterException;
 import com.gajava.library.model.Author;
 import com.gajava.library.model.Book;
 import com.gajava.library.repository.BookRepository;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class BookServiceImpl extends AbstractService<Book, BookRepository> implements BookService {
@@ -20,6 +20,9 @@ public class BookServiceImpl extends AbstractService<Book, BookRepository> imple
 
     @Override
     public List<Book> getAvailableBooks(final Pageable pageable) {
+        if (Objects.isNull(pageable)) {
+            throw new NullParameterException();
+        }
         final List<Book> bookList = repository.findByAvailabilityIsTrue(pageable).getContent();
         if (bookList.isEmpty()) {
             throw new NoEntityException(entityClass.getTypeName());
@@ -29,6 +32,9 @@ public class BookServiceImpl extends AbstractService<Book, BookRepository> imple
 
     @Override
     public List<Book> findByTitle(final String title, final Pageable pageable) {
+        if (Objects.isNull(title) || Objects.isNull(pageable)) {
+            throw new NullParameterException();
+        }
         final List<Book> bookList = repository.findByTitleContaining(title, pageable).getContent();
         if (bookList.isEmpty()) {
             throw new NoEntityException(entityClass.getTypeName());
@@ -38,6 +44,9 @@ public class BookServiceImpl extends AbstractService<Book, BookRepository> imple
 
     @Override
     public List<Book> findByGenre(final String genre, final Pageable pageable) {
+        if (Objects.isNull(genre) || Objects.isNull(pageable)) {
+            throw new NullParameterException();
+        }
         final List<Book> bookList = repository.findByGenreContaining(genre, pageable).getContent();
         if (bookList.isEmpty()) {
             throw new NoEntityException(entityClass.getTypeName());
@@ -47,6 +56,9 @@ public class BookServiceImpl extends AbstractService<Book, BookRepository> imple
 
     @Override
     public List<Book> findByAuthor(final Author author, final Pageable pageable) {
+        if (Objects.isNull(author) || Objects.isNull(pageable)) {
+            throw new NullParameterException();
+        }
         final String name = Objects.isNull(author.getName()) ? "" : author.getName();
         final String surname = Objects.isNull(author.getSurname()) ? "" : author.getSurname();
         final String patronymic = Objects.isNull(author.getPatronymic()) ? "" : author.getPatronymic();

@@ -16,13 +16,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @AllArgsConstructor
 @Service
 public class RentalRecordManagerImpl implements RentalRecordManager {
 
-    private final RentalRecordService service;
+    private final RentalRecordService recordService;
 
     @Override
     public List<RentalRecord> findByFilters(final RecordRequest request) {
@@ -41,6 +42,10 @@ public class RentalRecordManagerImpl implements RentalRecordManager {
 
         final List<RentalRecord> recordList = switch (filter) {
             case READER -> {
+                if (Objects.isNull(contains)) {
+                    throw new BadRequestException();
+                }
+
                 final String[] fullName = Arrays.stream(contains.split("\\W"))
                         .filter(x -> Pattern.matches("\\w+", x))
                         .toArray(String[]::new);
@@ -58,13 +63,13 @@ public class RentalRecordManagerImpl implements RentalRecordManager {
                     reader.setPatronymic(fullName[2]);
                 }
 
-                yield service.findByReader(reader, pageable);
+                yield recordService.findByReader(reader, pageable);
             }
-            case BOOK -> service.findByBook(contains.trim(), pageable);
-            case BORROW_AFTER -> service.findByTakeAfter(date, pageable);
-            case REFUND_AFTER -> service.findByReturnAfter(date, pageable);
-            case BOOK_STATUS -> service.findByRentalStatus(refund, pageable);
-            case NONE -> service.readAll(pageable);
+            case BOOK -> recordService.findByBook(contains, pageable);
+            case BORROW_AFTER -> recordService.findByTakeAfter(date, pageable);
+            case REFUND_AFTER -> recordService.findByReturnAfter(date, pageable);
+            case BOOK_STATUS -> recordService.findByRentalStatus(refund, pageable);
+            case NONE -> recordService.readAll(pageable);
         };
 
         if (recordList.isEmpty()) {
