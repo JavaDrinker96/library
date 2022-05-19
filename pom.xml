@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.3</version>
+		<relativePath/>
+	</parent>
+	<groupId>com.gajava</groupId>
+	<artifactId>library</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>library</name>
+	<description>Book library project for GA java</description>
+	<properties>
+		<java.version>14</java.version>
+	</properties>
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${project.parent.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.16.0</version>
+				<configuration>
+					<rulesets>
+						<ruleset>/quality/pmd/pmd-ruleset-production.xml</ruleset>
+					</rulesets>
+					<outputDirectory>${project.build.directory}/reports/pmd</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>pmd</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--            <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>findbugs-maven-plugin</artifactId>
+                            <version>3.0.4</version>
+                            <executions>
+                                <execution>
+                                    <id>findbugs</id>
+                                    <phase>compile</phase>
+                                    <goals>
+                                        <goal>check</goal>
+                                    </goals>
+                                    <configuration>
+                                        <excludeFilterFile>/quality/findbugs/exclude-filter.xml</excludeFilterFile>
+                                        <findbugsXmlOutputDirectory>${project.build.directory}/reports/findbugs
+                                        </findbugsXmlOutputDirectory>
+                                        <failOnError>true</failOnError>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>-->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+							<enableAssertions>false</enableAssertions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.17</version>
+				<executions>
+					<execution>
+						<id>checkstyle</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>checkstyle</goal>
+						</goals>
+						<configuration>
+							<configLocation>/quality/checkstyle/checkstyle-production.xml</configLocation>
+							<outputFile>${project.build.directory}/reports/checkstyle/checkstyle-result.xml
+							</outputFile>
+							<failsOnError>false</failsOnError>
+						</configuration>
+					</execution>
+					<execution>
+						<id>check</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>checkstyle</goal>
+						</goals>
+						<configuration>
+							<configLocation>/quality/checkstyle/checkstyle-production.xml</configLocation>
+							<outputFile>${project.build.directory}/reports/checkstyle/checkstyle-result.xml
+							</outputFile>
+							<failsOnError>true</failsOnError>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--Forming a html report at compile step.-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<id>checkstyle-html</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>transform</goal>
+						</goals>
+						<configuration>
+							<transformationSets>
+								<transformationSet>
+									<dir>${project.build.directory}/reports/checkstyle</dir>
+									<outputDir>${project.build.directory}/reports/checkstyle</outputDir>
+									<stylesheet>/quality/checkstyle/checkstyle-noframes-sorted.xsl</stylesheet>
+									<fileMappers>
+										<fileMapper
+												implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+											<targetExtension>.html</targetExtension>
+										</fileMapper>
+									</fileMappers>
+								</transformationSet>
+							</transformationSets>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>2.17</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
